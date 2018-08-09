@@ -7,6 +7,8 @@ Hustad et al. (2018/in press) uses a logistic curve with the form:
 
 where *asymptote* is the ceiling or plateau of the curve, *scale* controls the slope of the curve, *mid* is the point where the curve is steepest.
 
+Here I want to simulate these curves en masse so that I can see how the parameters work. This function will generate a single curve. By default it simulates the *mid*, *scale* and *asymptotes*, but these can be set individually.
+
 ``` r
 library(tidyverse)
 #> -- Attaching packages ------------------------------------------- tidyverse 1.2.1 --
@@ -21,7 +23,6 @@ library(tidyverse)
 # Generate a single curve
 generate_curve <- function(time = -10:10, mid = NULL, 
                            asymptote = NULL, scale = NULL) {
-  
   # If no value is given, draw one from a distribution
   mid <- mid %||% rnorm(1, 0, 3)
   asymptote <- asymptote %||% rbeta(1, 2, 1)
@@ -37,7 +38,39 @@ generate_curve <- function(time = -10:10, mid = NULL,
     min_proportion = min(y), 
     mid = mid)  
 }
+```
 
+``` r
+generate_curve(asymptote = .8) %>% 
+  ggplot() + 
+    aes(x = time, y = proportion) + 
+    geom_line() + 
+    expand_limits(y = 0:1)
+
+generate_curve(asymptote = .8, mid = -4) %>% 
+  ggplot() + 
+    aes(x = time, y = proportion) + 
+    geom_line() + 
+    expand_limits(y = 0:1)
+
+generate_curve(asymptote = .8, mid = -4, scale = 3) %>% 
+  ggplot() + 
+    aes(x = time, y = proportion) + 
+    geom_line() + 
+    expand_limits(y = 0:1)
+
+generate_curve(asymptote = .4, scale = 1) %>% 
+  ggplot() + 
+    aes(x = time, y = proportion) + 
+    geom_line() + 
+    expand_limits(y = 0:1)
+```
+
+![](./figures/2018-08-00-nonlinear-logistics/tests-1.png)![](./figures/2018-08-00-nonlinear-logistics/tests-2.png)![](./figures/2018-08-00-nonlinear-logistics/tests-3.png)![](./figures/2018-08-00-nonlinear-logistics/tests-4.png)
+
+Here I wrap the curve in another function so that `n` curves can be generate at once. When the arguments here are used, that parameter should be fixed for all generated curves.
+
+``` r
 generate_n_curves <- function(n, time = -10:10, mid = NULL, 
                               asymptote = NULL, scale = NULL) {
   f <- function() {
