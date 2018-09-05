@@ -53,30 +53,39 @@ generate_curve <- function(time = -10:10, mid = NULL,
 ```
 
 
-```{r tests, fig.width=2, fig.height=5, fig.show='hold'}
+```{r tests, fig.width = 4, fig.height = 5, fig.show = "hold", out.width = "50%"}
+set.seed(20180905)
 generate_curve(asymptote = .8) %>% 
   ggplot() + 
     aes(x = time, y = proportion) + 
-    geom_line() + 
-    expand_limits(y = 0:1)
+    geom_hline(yintercept = .8, color = "grey60") + 
+    geom_line(size = 1) + 
+    expand_limits(y = 0:1) + 
+    ggtitle("Asymptote = .8")
 
 generate_curve(asymptote = .8, mid = -4) %>% 
   ggplot() + 
     aes(x = time, y = proportion) + 
-    geom_line() + 
-    expand_limits(y = 0:1)
+    geom_hline(yintercept = .8, color = "grey60") + 
+    geom_line(size = 1) + 
+    expand_limits(y = 0:1) + 
+    ggtitle("Asymptote = .8, Mid = -4")
 
 generate_curve(asymptote = .8, mid = -4, scale = 3) %>% 
   ggplot() + 
     aes(x = time, y = proportion) + 
-    geom_line() + 
-    expand_limits(y = 0:1)
+    geom_hline(yintercept = .8, color = "grey60") + 
+    geom_line(size = 1) + 
+    expand_limits(y = 0:1) + 
+    ggtitle("Asymptote = .8, Mid = -4, Scale = 3")
 
 generate_curve(asymptote = .4, scale = 1) %>% 
   ggplot() + 
     aes(x = time, y = proportion) + 
-    geom_line() + 
-    expand_limits(y = 0:1)
+    geom_hline(yintercept = .4, color = "grey60") + 
+    geom_line(size = 1) + 
+    expand_limits(y = 0:1)  + 
+    ggtitle("Asymptote = .4, Scale = 1")
 ```
 
 
@@ -144,9 +153,10 @@ p1 + p2 +
     subtitle = "Earlier crossovers (`mid`) and/or steeper slopes (`scale`)")
 ```
 
-In the paper, the scale is not a random effect. Only the `mid` and `asymptote` are.
+In the paper, the scale is not a random effect. Only the `mid` and `asymptote`
+are.
 
-```{r scale-differences, fig.height=5, fig.width = 7}
+```{r scale-differences, fig.height = 5, fig.width = 7}
 fifty <- dplyr::bind_rows(
   generate_n_curves(50, scale = 0),
   generate_n_curves(50, scale = 1),
@@ -161,9 +171,10 @@ library(ggplot2)
 ggplot(fifty) +
   aes(x = time, y = proportion, group = sim) +
   geom_line(color = "grey40", alpha = .5) + 
-  facet_wrap("scale",labeller = label_both) + 
+  facet_wrap("scale", labeller = label_both) + 
   labs(
     title = "Curves for fixed `scale` values",
-    caption = "Other parameters simulated:\nasymptote ~ beta(2,1); mid ~ normal(0,3)")
+    caption = 
+      "Other parameters simulated:\nasymptote ~ beta(2,1); mid ~ normal(0,3)")
 ```
 
